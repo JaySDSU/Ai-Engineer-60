@@ -1,0 +1,36 @@
+[project]
+name = "ai-engineer-60"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "JaySDSU", email = "54603632+JaySDSU@users.noreply.github.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "anthropic>=2.4.0",
+    "pydantic>=2.14.2",
+    "python-dotenv>=1.2.4",
+    "typer>=0.27.3",
+]
+
+[project.scripts]
+ai-engineer-60 = "ai_engineer_60:main"
+coach = "ai_engineer_60.coach.cli:app"
+
+[build-system]
+requires = ["uv_build>=0.13.7,<0.14.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.7.0",
+    "pytest>=9.2.0",
+    "pytest-mock>=3.17.0",
+    "ruff>=0.17.3",
+]
+
+[tool.ruff]
+line-length = 130
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
