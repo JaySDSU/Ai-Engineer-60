@@ -1,11 +1,12 @@
-"""The 60-day AI Engineer curriculum as data. Day 1 = Sun Nov 1, 2026."""
+"""The 60-day AI Engineer curriculum as data. Day 1 = Wed Nov 18, 2026; Day 60 = Sat Jan 16, 2027."""
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import date, timedelta
 
-START_DATE = date(2026, 11, 1)
+START_DATE = date(2026, 11, 18)
+END_DATE = START_DATE + timedelta(days=59)
 
 
 @dataclass(frozen=True)
@@ -61,86 +62,39 @@ GATES = {
     5: ["Full mock loop: 3/4 or better on every round"],
 }
 
-_RAW = [
-    # Phase 1
+# (phase, learn, build). Light days sit on the real holidays: Thanksgiving (Day 9), Christmas (Day 38).
+_RAW: list[tuple[int, str, str]] = [
+    # Phase 1 — Days 1-14 (Nov 18 - Dec 1)
     (1, "Set up repo, uv, ruff, pytest, pre-commit, API keys", "Run Coach Agent; log Day 1"),
-    (
-        1,
-        "Tokenization (BPE), embeddings, token cost",
-        "Script: count tokens and cost for 5 prompts",
-    ),
-    (
-        1,
-        "Transformer architecture: attention, positional encoding",
-        "1-page notes + diagram in your words",
-    ),
-    (
-        1,
-        "Pretraining vs instruction tuning vs RLHF; sampling params",
-        "Temperature experiment 0 / 0.7 / 1.2",
-    ),
-    (
-        1,
-        "Messages API: system prompts, roles, streaming, stop reasons",
-        "Coach: streaming responses",
-    ),
-    (
-        1,
-        "Structured outputs: JSON schema, Pydantic, retries",
-        "Coach: progress log parsed into Pydantic",
-    ),
+    (1, "Tokenization (BPE), embeddings, token cost", "Script: count tokens and cost for 5 prompts"),
+    (1, "Transformer architecture: attention, positional encoding", "1-page notes + diagram in your words"),
+    (1, "Pretraining vs instruction tuning vs RLHF; sampling params", "Temperature experiment 0 / 0.7 / 1.2"),
+    (1, "Messages API: system prompts, roles, streaming, stop reasons", "Coach: streaming responses"),
+    (1, "Structured outputs: JSON schema, Pydantic, retries", "Coach: progress log parsed into Pydantic"),
     (1, "Tool calling: tool_use / tool_result loop", "Coach: hand-written agent loop with 3 tools"),
-    (
-        1,
-        "Prompt engineering patterns: examples, XML tags, chaining",
-        "Write-up #1: how tool calling works",
-    ),
+    (1, "Prompt engineering patterns: examples, XML tags, chaining", "Write-up #1: how tool calling works"),
+    (1, "Thanksgiving: light day", "1 h flashcards + review notes"),
     (1, "Context engineering; prompt caching", "Coach: cache curriculum, measure savings"),
-    (
-        1,
-        "Hallucination causes and mitigations; grounding",
-        "Coach: quiz refuses to grade without rubric",
-    ),
-    (
-        1,
-        "Async Python: asyncio, semaphores, backoff, rate limits",
-        "Coach: parallel question generation",
-    ),
-    (
-        1,
-        "Model selection: frontier vs small vs open-weight",
-        "Benchmark 3 models: cost/latency/quality",
-    ),
-    (
-        1,
-        "Local inference: Ollama, vLLM, quantization",
-        "Coach: provider abstraction (Claude or local)",
-    ),
+    (1, "Hallucination causes and mitigations; grounding", "Coach: quiz refuses to grade without rubric"),
+    (1, "Model selection: frontier vs small vs open-weight", "Benchmark 3 models: cost/latency/quality"),
+    (1, "Local inference: Ollama, vLLM, quantization", "Coach: provider abstraction (Claude or local)"),
     (1, "Testing LLM code: mocks, snapshot tests", "Coach v1 shipped with README, tests, demo"),
-    # Phase 2
-    (
-        2,
-        "RAG end to end; RAG vs fine-tuning vs long context",
-        "Collect 50-100 public pricing/RM docs",
-    ),
+    # Phase 2 — Days 15-28 (Dec 2 - Dec 15)
+    (2, "RAG end to end; RAG vs fine-tuning vs long context", "Collect 50-100 public pricing/RM docs"),
     (2, "Document parsing, cleaning, metadata", "Ingestion pipeline"),
     (2, "Chunking: fixed, recursive, semantic, parent-child", "Two chunkers for comparison"),
+    (2, "Async Python: asyncio, semaphores, backoff, rate limits", "Coach: parallel question generation"),
     (2, "Embeddings, cosine similarity, HNSW/IVF", "Embed into Postgres + pgvector"),
     (2, "Eval design: golden datasets, leakage", "Hand-write 50 Q/A/source triples"),
     (2, "Retrieval metrics: recall@k, MRR, nDCG", "Retrieval eval script + baseline"),
     (2, "Hybrid search (BM25 + vector), RRF, rerankers", "Add hybrid + reranker; record delta"),
-    (
-        2,
-        "Generation evals: faithfulness, LLM-as-judge biases",
-        "Judge prompt calibrated on 20 labels",
-    ),
+    (2, "Generation evals: faithfulness, LLM-as-judge biases", "Judge prompt calibrated on 20 labels"),
     (2, "Citations, grounding, 'I don't know'", "Cited answers + unanswerable-question eval"),
     (2, "Query rewriting, HyDE, multi-query, filters", "Implement one; keep only if evals improve"),
     (2, "Evals in CI: regression gates", "GitHub Action fails on faithfulness drop"),
-    (2, "Thanksgiving: light day", "1 h flashcards + review notes"),
     (2, "FastAPI for RAG; streaming endpoints", "/ask endpoint with streaming + sources"),
     (2, "Write the eval scorecard", "Project 2 shipped: README metrics + demo"),
-    # Phase 3
+    # Phase 3 — Days 29-42 (Dec 16 - Dec 29)
     (3, "Agent patterns: ReAct, plan-execute, workflows vs agents", "Pricing Agent design doc"),
     (3, "Synthetic data generation", "Hotel bookings dataset in Postgres"),
     (3, "Text-to-SQL: schema prompting, validation, safety", "Read-only SQL tool with limits"),
@@ -150,43 +104,39 @@ _RAW = [
     (3, "Memory: short/long-term, persistence", "Checkpointing + memory"),
     (3, "Agent evals: task success, trajectories, tool accuracy", "30 test tasks; success rate"),
     (3, "Human-in-the-loop: approvals, interrupts", "Approval gate before recommendations"),
-    (
-        3,
-        "Multi-agent: supervisor, handoffs, when not to",
-        "Supervisor + 2 subagents vs single, with evals",
-    ),
+    (3, "Christmas: light day", "1 h flashcards"),
+    (3, "Multi-agent: supervisor, handoffs, when not to", "Supervisor + 2 subagents vs single, with evals"),
     (3, "Guardrails: prompt injection, permissions, PII", "10-attack injection suite + defenses"),
     (3, "Failure analysis: loops, wrong tool, overflow", "Fix top 3 failures"),
-    (3, "Coach upgrade: MCP + scheduled check-ins", "Coach v2 exposes progress via MCP"),
     (3, "Consolidate", "Agent >= 70% task success; README"),
-    # Phase 4
+    # Phase 4 — Days 43-53 (Dec 30 - Jan 9)
     (4, "Containerization, secrets, config", "docker-compose: agent + API + Postgres"),
     (4, "Deployment: Cloud Run / Fly / ECS", "Public URL with auth"),
     (4, "Observability: tracing, Langfuse/LangSmith", "Latency + cost dashboard"),
     (4, "Cost/latency: caching, routing, batching", "Model routing; start applying 5/day"),
+    (4, "Coach upgrade: MCP + scheduled check-ins", "Coach v2 exposes progress via MCP"),
     (4, "Angular streaming UI for AI apps (SSE)", "Angular chat UI with tool calls + sources"),
     (4, "Classical ML: bias/variance, metrics, CV, leakage", "30 flashcards + sklearn model"),
     (4, "PyTorch essentials: training loop, loss, optimizers", "Tiny model, explain every line"),
     (4, "Fine-tuning: SFT, LoRA/QLoRA, DPO", "LoRA a small model; compare vs prompting"),
     (4, "Responsible AI: bias, privacy, governance", "Risks section in all READMEs"),
     (4, "Portfolio polish", "3 projects pinned, diagrams, evals, demos"),
-    # Phase 5
+    # Phase 5 — Days 54-60 (Jan 10 - Jan 16)
     (5, "AI system design #1: enterprise RAG search", "Recorded mock + rubric self-score"),
     (5, "Coding mocks: 2 timed mediums out loud", "Recording + mistake list"),
-    (5, "Christmas: light day", "1 h flashcards"),
     (5, "Take-home simulation (4 hours)", "Feature with tests + evals in time box"),
     (5, "System design #2, #3: coding agent; fraud explanations", "Two recorded mocks"),
     (5, "Behavioral: 8 STAR stories", "Each under 2.5 minutes"),
     (5, "Project deep-dive drills", "Defend every choice with a number"),
-    (5, "Final exam: full mock loop", "FINAL GATE"),
+    (5, "Final exam: full mock loop", "Score 3/4+ on every round"),
 ]
 
-_GATE_DAYS = {14, 28, 42, 52, 60}
-_LIGHT_DAYS = {26, 55}
+GATE_DAYS = {14, 28, 42, 53, 60}
+LIGHT_DAYS = {9, 38}
 
 CURRICULUM: list[Day] = [
-    Day(n=i + 1, phase=p, learn=learn_topic, build=b, gate=(i + 1) in _GATE_DAYS, light=(i + 1) in _LIGHT_DAYS)
-    for i, (p, learn_topic, b) in enumerate(_RAW)
+    Day(n=i + 1, phase=p, learn=learn, build=build, gate=(i + 1) in GATE_DAYS, light=(i + 1) in LIGHT_DAYS)
+    for i, (p, learn, build) in enumerate(_RAW)
 ]
 assert len(CURRICULUM) == 60, len(CURRICULUM)
 

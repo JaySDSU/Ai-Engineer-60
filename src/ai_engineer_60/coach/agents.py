@@ -14,7 +14,7 @@ from dataclasses import dataclass, field
 from datetime import date
 from typing import Any
 
-from .curriculum import GATES, PHASES, day_for, get_day, topics_through
+from .curriculum import GATES, PHASES, START_DATE, day_for, get_day, topics_through
 from .store import Store
 
 MODEL = os.environ.get("COACH_MODEL", "claude-sonnet-5-5")
@@ -25,8 +25,6 @@ def current_day_number(today: date | None = None) -> int:
     d = day_for(today or date.today())
     if d:
         return d.n
-    from .curriculum import START_DATE
-
     return 0 if (today or date.today()) < START_DATE else 60
 
 
@@ -46,7 +44,11 @@ def build_tools(store: Store, today: date | None = None) -> dict[str, Tool]:
     def get_plan(day: int | None = None) -> dict:
         n = day or current_day_number(today)
         if n == 0:
-            return {"status": "not_started", "message": "Program starts Sun Nov 1, 2026."}
+            return {
+                "status": "not_started",
+                "message": f"Program starts {START_DATE:%a %b %d, %Y}.",
+                "start_date": START_DATE.isoformat(),
+            }
         d = get_day(n)
         out = {
             "day": d.n,

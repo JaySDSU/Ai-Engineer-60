@@ -3,8 +3,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from ai_engineer_60.coach.agents import Agent, build_tools, run_tool
-from ai_engineer_60.coach.curriculum import CURRICULUM, day_for, get_day, topics_through
+from ai_engineer_60.coach.agents import Agent, build_tools, current_day_number, run_tool
+from ai_engineer_60.coach.curriculum import CURRICULUM, PHASES, day_for, get_day, topics_through
 from ai_engineer_60.coach.store import Store
 
 
@@ -15,17 +15,32 @@ def store(tmp_path):
 
 def test_curriculum_shape():
     assert len(CURRICULUM) == 60
-    assert get_day(1).date == date(2026, 11, 1)
-    assert get_day(60).date == date(2026, 12, 30)
-    assert get_day(26).light and get_day(26).date == date(2026, 11, 26)  # Thanksgiving
-    assert get_day(55).light and get_day(55).date == date(2026, 12, 25)  # Christmas
-    assert [d.n for d in CURRICULUM if d.gate] == [14, 28, 42, 52, 60]
-    assert day_for(date(2026, 10, 31)) is None
+    assert get_day(1).date == date(2026, 11, 18)
+    assert get_day(60).date == date(2027, 1, 16)
+    assert get_day(9).light and get_day(9).date == date(2026, 11, 26)  # Thanksgiving
+    assert get_day(38).light and get_day(38).date == date(2026, 12, 25)  # Christmas
+    assert [d.n for d in CURRICULUM if d.light] == [9, 38]
+    assert [d.n for d in CURRICULUM if d.gate] == [14, 28, 42, 53, 60]
+    assert day_for(date(2026, 11, 17)) is None
+    assert day_for(date(2027, 1, 17)) is None
+
+
+def test_gate_days_close_their_phase():
+    for n in (14, 28, 42, 53):
+        assert get_day(n).phase != get_day(n + 1).phase
+    assert {d.phase for d in CURRICULUM} == set(PHASES)
+
+
+def test_current_day_number_bounds():
+    assert current_day_number(date(2026, 11, 17)) == 0
+    assert current_day_number(date(2026, 11, 18)) == 1
+    assert current_day_number(date(2027, 1, 16)) == 60
 
 
 def test_topics_exclude_light_days():
     assert "Thanksgiving: light day" not in topics_through(30)
     assert len(topics_through(3)) == 3
+    assert len(topics_through(10)) == 9  # Day 9 is light
 
 
 def test_stats_missed_and_streak(store):
@@ -43,13 +58,19 @@ def test_log_validation(store):
 
 
 def test_run_tool_errors_returned_to_model(store):
-    tools = build_tools(store, today=date(2026, 11, 14))
+    tools = build_tools(store, today=date(2026, 12, 1))  # Day 14 = Gate 1
     out, err = run_tool(tools, "get_plan", {})
     assert not err and '"is_gate_day": true' in out
     out, err = run_tool(tools, "log_progress", {"day": 99, "hours": 3, "learned": "a", "built": "b"})
     assert err and "1-60" in out
     _, err = run_tool(tools, "nope", {})
     assert err
+
+
+def test_get_plan_before_start(store):
+    tools = build_tools(store, today=date(2026, 11, 17))
+    out, err = run_tool(tools, "get_plan", {})
+    assert not err and "not_started" in out and "2026-11-18" in out
 
 
 class FakeClient:
@@ -71,5 +92,5 @@ class FakeClient:
 
 
 def test_agent_loop(store):
-    a = Agent("coach", store, client=FakeClient(), today=date(2026, 11, 7))
+    a = Agent("coach", store, client=FakeClient(), today=date(2026, 11, 24))  # Day 7
     assert a.send("hi") == "Do Day 7."
