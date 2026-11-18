@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import os
 from collections.abc import Callable
 from dataclasses import dataclass, field
@@ -16,6 +17,8 @@ from typing import Any
 
 from .curriculum import GATES, PHASES, START_DATE, day_for, get_day, topics_through
 from .store import Store
+
+log = logging.getLogger(__name__)
 
 MODEL = os.environ.get("COACH_MODEL", "claude-sonnet-5-5")
 MAX_TOOL_ROUNDS = 8
@@ -167,14 +170,27 @@ def build_tools(store: Store, today: date | None = None) -> dict[str, Tool]:
 
 
 def run_tool(tools: dict[str, Tool], name: str, args: dict) -> tuple[str, bool]:
-    """Execute a tool; return (json_result, is_error). Errors go back to the model so it can recover."""
+    """Execute a tool; return (json_result, is_error).
+
+    Every failure becomes an is_error tool_result so the model can recover (retry with fixed args,
+    pick another tool, or tell the user). The agent loop itself must never crash because a tool did.
+    """
     tool = tools.get(name)
     if tool is None:
-        return json.dumps({"error": f"unknown tool {name}"}), True
+        return json.dumps({"error": f"unknown tool {name!r}", "available_tools": sorted(tools)}), True
     try:
-        return json.dumps(tool.fn(**args), default=str), False
-    except (TypeError, ValueError) as e:
+        result = tool.fn(**args)
+    except TypeError as e:  # wrong / missing / extra arguments from the model
+        return json.dumps({"error": f"bad arguments for {name}: {e}"}), True
+    except ValueError as e:  # our own validation (e.g. day out of range)
         return json.dumps({"error": str(e)}), True
+    except Exception as e:  # anything else (sqlite3.Error, OSError, bugs): report, don't crash
+        log.exception("tool %s failed", name)
+        return json.dumps({"error": f"{name} failed: {type(e).__name__}: {e}"}), True
+    try:
+        return json.dumps(result, default=str), False
+    except (TypeError, ValueError) as e:  # result not JSON-serialisable
+        return json.dumps({"error": f"{name} returned unserialisable output: {e}"}), True
 
 
 # ------------------------------------------------------------------ personas
