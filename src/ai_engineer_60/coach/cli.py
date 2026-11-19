@@ -12,7 +12,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
+
+from dotenv import find_dotenv, load_dotenv
 
 from .agents import Agent, build_tools, current_day_number
 from .store import Store
@@ -39,6 +42,16 @@ def chat(persona: str, store: Store) -> None:
             print("\n" + agent.send(msg) + "\n")
 
 
+def missing_api_config() -> str | None:
+    """Return an error message if the chat commands can't reach the API, else None."""
+    if not os.environ.get("ANTHROPIC_API_KEY"):
+        return (
+            "ANTHROPIC_API_KEY is not set. Copy .env.example to .env in the project root and add your key "
+            "(https://console.anthropic.com/settings/keys)."
+        )
+    return None
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(prog="coach")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -49,6 +62,9 @@ def main(argv: list[str] | None = None) -> int:
     for name in ("checkin", "quiz", "interview"):
         sub.add_parser(name)
     args = p.parse_args(argv)
+    # Search for .env from the current working directory upwards. (Plain load_dotenv() searches from
+    # this file's location instead, which ignores where you run the command from.)
+    load_dotenv(find_dotenv(usecwd=True))
 
     store = Store()
     tools = build_tools(store)
@@ -60,6 +76,9 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Day {current_day_number()} of 60")
         print(json.dumps(tools["get_progress"].fn(), indent=2, default=str))
     else:
+        if err := missing_api_config():
+            print(f"error: {err}", file=sys.stderr)
+            return 2
         chat({"checkin": "coach", "quiz": "quiz", "interview": "interview"}[args.cmd], store)
     return 0
 
