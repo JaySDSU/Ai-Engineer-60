@@ -1,0 +1,11 @@
+on: [push, pull_request]          # when it runs: every push and every PR
+jobs:
+  test:
+    runs-on: ubuntu-latest        # GitHub gives you a fresh Linux machine
+    steps:
+      - uses: actions/checkout@v4     # get your code onto that machine
+      - uses: astral-sh/setup-uv@v5   # install uv
+      - run: uv sync --frozen         # install the exact versions in uv.lock
+      - run: uv run ruff check .      # lint
+      - run: uv run ruff format --check .
+      - run: uv run pytest -q         # tests; any failure turns the commit red
