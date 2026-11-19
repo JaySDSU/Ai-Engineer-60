@@ -14,7 +14,6 @@ SCHEMA = """
 CREATE TABLE IF NOT EXISTS logs (
     day INTEGER PRIMARY KEY,
     logged_on TEXT NOT NULL,
-    hours REAL NOT NULL,
     learned TEXT NOT NULL,
     built TEXT NOT NULL,
     commit_url TEXT,
@@ -44,6 +43,14 @@ class Store:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         with self._conn() as c:
             c.executescript(SCHEMA)
+            self._migrate(c)
+
+    @staticmethod
+    def _migrate(c: sqlite3.Connection) -> None:
+        """Drop the old `hours` column from databases created before hours tracking was removed."""
+        cols = {row["name"] for row in c.execute("PRAGMA table_info(logs)")}
+        if "hours" in cols:
+            c.execute("ALTER TABLE logs DROP COLUMN hours")
 
     @contextmanager
     def _conn(self):
@@ -59,7 +66,6 @@ class Store:
     def log_day(
         self,
         day: int,
-        hours: float,
         learned: str,
         built: str,
         commit_url: str | None = None,
@@ -68,15 +74,13 @@ class Store:
     ) -> None:
         if not 1 <= day <= 60:
             raise ValueError("day must be 1-60")
-        if hours < 0 or hours > 16:
-            raise ValueError("hours must be between 0 and 16")
         with self._conn() as c:
             c.execute(
-                "INSERT OR REPLACE INTO logs VALUES (?,?,?,?,?,?,?,?)",
+                "INSERT OR REPLACE INTO logs (day, logged_on, learned, built, commit_url, leetcode, blockers) "
+                "VALUES (?,?,?,?,?,?,?)",
                 (
                     day,
                     date.today().isoformat(),
-                    hours,
                     learned,
                     built,
                     commit_url,
@@ -130,7 +134,6 @@ class Store:
             "days_due": len(due),
             "missed_days": missed,
             "streak": streak,
-            "total_hours": round(sum(log["hours"] for log in logs), 1),
             "leetcode_total": sum(log["leetcode"] for log in logs),
             "days_without_commit": [log["day"] for log in logs if not log["commit_url"]],
             "quiz_avg": round(q["a"], 1) if q["a"] is not None else None,

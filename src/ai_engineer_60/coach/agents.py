@@ -20,7 +20,14 @@ from .store import Store
 
 log = logging.getLogger(__name__)
 
-MODEL = os.environ.get("COACH_MODEL", "claude-sonnet-5-5")
+DEFAULT_MODEL = "claude-sonnet-5-5"  # override with COACH_MODEL in .env
+
+
+def model_name() -> str:
+    """Read at call time (not import time) so values loaded from .env by the CLI are picked up."""
+    return os.environ.get("COACH_MODEL") or DEFAULT_MODEL
+
+
 MAX_TOOL_ROUNDS = 8
 
 
@@ -71,14 +78,13 @@ def build_tools(store: Store, today: date | None = None) -> dict[str, Tool]:
 
     def log_progress(
         day: int,
-        hours: float,
         learned: str,
         built: str,
         commit_url: str = "",
         leetcode: int = 0,
         blockers: str = "",
     ) -> dict:
-        store.log_day(day, hours, learned, built, commit_url or None, leetcode, blockers or None)
+        store.log_day(day, learned, built, commit_url or None, leetcode, blockers or None)
         return {"ok": True, "logged_day": day}
 
     def get_quiz_topics(through_day: int | None = None) -> dict:
@@ -107,27 +113,26 @@ def build_tools(store: Store, today: date | None = None) -> dict[str, Tool]:
         ),
         Tool(
             "get_progress",
-            "Get the student's progress stats: days logged, missed days, streak, hours, "
+            "Get the student's progress stats: days logged, missed days, streak, "
             "LeetCode count, days logged without a commit, quiz average, weak topics, recent mock interviews.",
             {"type": "object", "properties": {}},
             get_progress,
         ),
         Tool(
             "log_progress",
-            "Save the student's log for a day. Only call after the student has given hours, "
+            "Save the student's log for a day. Only call after the student has given "
             "what they learned and what they built. Ask for a commit URL; record empty if they have none.",
             {
                 "type": "object",
                 "properties": {
                     "day": {"type": "integer", "minimum": 1, "maximum": 60},
-                    "hours": {"type": "number", "minimum": 0, "maximum": 16},
                     "learned": {"type": "string"},
                     "built": {"type": "string"},
                     "commit_url": {"type": "string"},
                     "leetcode": {"type": "integer", "minimum": 0},
                     "blockers": {"type": "string"},
                 },
-                "required": ["day", "hours", "learned", "built"],
+                "required": ["day", "learned", "built"],
             },
             log_progress,
         ),
@@ -207,10 +212,9 @@ ROLE: Daily accountability coach.
 2. State today's assignment in 3 lines. If it's a gate day, list the gate criteria as pass/fail checks.
 3. Call out every missed day and every logged day without a commit. Missed days must be made up within 72 hours:
    assign the concrete make-up task.
-4. If the student wants to log, collect hours, learned, built, commit URL, LeetCode count, blockers, then call
+4. If the student wants to log, collect learned, built, commit URL, LeetCode count, blockers, then call
    log_progress. If 'learned' is vague ("read about RAG"), make them restate it as something they can explain.
-5. End with the top 3 tasks for the next session.
-Weekday minimum 3 h, weekend 7 h. Below that, say so plainly.""",
+5. End with the top 3 tasks for the next session.""",
     "quiz": STRICT
     + """
 ROLE: Quizmaster.
@@ -238,8 +242,10 @@ class Agent:
     client: Any = None
     today: date | None = None
     messages: list[dict] = field(default_factory=list)
+    model: str | None = None
 
     def __post_init__(self):
+        self.model = self.model or model_name()
         if self.client is None:
             import anthropic  # imported lazily so tests run without the SDK
 
@@ -251,7 +257,7 @@ class Agent:
         self.messages.append({"role": "user", "content": user_text})
         for _ in range(MAX_TOOL_ROUNDS):
             resp = self.client.messages.create(
-                model=MODEL,
+                model=self.model,
                 max_tokens=2048,
                 # cache the stable prefix (system + tools): Day 9 lesson in action
                 system=[{"type": "text", "text": self.system, "cache_control": {"type": "ephemeral"}}],
