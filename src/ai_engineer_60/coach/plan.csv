@@ -1,61 +1,61 @@
 day,date,weekday,phase,tag,learn,build
-1,2026-11-18,Wed,1,,"Set up repo, uv, ruff, pytest, pre-commit, API keys",Run Coach Agent; log Day 1
-2,2026-11-19,Thu,1,,"Tokenization (BPE), embeddings, token cost",Script: count tokens and cost for 5 prompts
-3,2026-11-20,Fri,1,,"Transformer architecture: attention, positional encoding",1-page notes + diagram in your words
-4,2026-11-21,Sat,1,,Pretraining vs instruction tuning vs RLHF; sampling params,Temperature experiment 0 / 0.7 / 1.2
-5,2026-11-22,Sun,1,,"Messages API: system prompts, roles, streaming, stop reasons",Coach: streaming responses
-6,2026-11-23,Mon,1,,"Structured outputs: JSON schema, Pydantic, retries",Coach: progress log parsed into Pydantic
-7,2026-11-24,Tue,1,,Tool calling: tool_use / tool_result loop,Coach: hand-written agent loop with 3 tools
-8,2026-11-25,Wed,1,,"Prompt engineering patterns: examples, XML tags, chaining",Write-up #1: how tool calling works
-9,2026-11-26,Thu,1,LIGHT,Thanksgiving: light day,1 h flashcards + review notes
-10,2026-11-27,Fri,1,,Context engineering; prompt caching,"Coach: cache curriculum, measure savings"
-11,2026-11-28,Sat,1,,Hallucination causes and mitigations; grounding,Coach: quiz refuses to grade without rubric
-12,2026-11-29,Sun,1,,Model selection: frontier vs small vs open-weight,Benchmark 3 models: cost/latency/quality
-13,2026-11-30,Mon,1,,"Local inference: Ollama, vLLM, quantization",Coach: provider abstraction (Claude or local)
-14,2026-12-01,Tue,1,GATE 1,"Testing LLM code: mocks, snapshot tests","Coach v1 shipped with README, tests, demo"
-15,2026-12-02,Wed,2,,RAG end to end; RAG vs fine-tuning vs long context,Collect 50-100 public pricing/RM docs
-16,2026-12-03,Thu,2,,"Document parsing, cleaning, metadata",Ingestion pipeline
-17,2026-12-04,Fri,2,,"Chunking: fixed, recursive, semantic, parent-child",Two chunkers for comparison
-18,2026-12-05,Sat,2,,"Async Python: asyncio, semaphores, backoff, rate limits",Coach: parallel question generation
-19,2026-12-06,Sun,2,,"Embeddings, cosine similarity, HNSW/IVF",Embed into Postgres + pgvector
-20,2026-12-07,Mon,2,,"Eval design: golden datasets, leakage",Hand-write 50 Q/A/source triples
-21,2026-12-08,Tue,2,,"Retrieval metrics: recall@k, MRR, nDCG",Retrieval eval script + baseline
-22,2026-12-09,Wed,2,,"Hybrid search (BM25 + vector), RRF, rerankers",Add hybrid + reranker; record delta
-23,2026-12-10,Thu,2,,"Generation evals: faithfulness, LLM-as-judge biases",Judge prompt calibrated on 20 labels
-24,2026-12-11,Fri,2,,"Citations, grounding, 'I don't know'",Cited answers + unanswerable-question eval
-25,2026-12-12,Sat,2,,"Query rewriting, HyDE, multi-query, filters",Implement one; keep only if evals improve
-26,2026-12-13,Sun,2,,Evals in CI: regression gates,GitHub Action fails on faithfulness drop
-27,2026-12-14,Mon,2,,FastAPI for RAG; streaming endpoints,/ask endpoint with streaming + sources
-28,2026-12-15,Tue,2,GATE 2,Write the eval scorecard,Project 2 shipped: README metrics + demo
-29,2026-12-16,Wed,3,,"Agent patterns: ReAct, plan-execute, workflows vs agents",Pricing Agent design doc
-30,2026-12-17,Thu,3,,Synthetic data generation,Hotel bookings dataset in Postgres
-31,2026-12-18,Fri,3,,"Text-to-SQL: schema prompting, validation, safety",Read-only SQL tool with limits
-32,2026-12-19,Sat,3,,"Tool design: names, descriptions, recoverable errors",Forecast tool + RAG tool
-33,2026-12-20,Sun,3,,"Model Context Protocol: servers, tools, resources",SQL tool as an MCP server
-34,2026-12-21,Mon,3,,LangGraph vs Claude Agent SDK vs OpenAI Agents SDK,Port agent to LangGraph
-35,2026-12-22,Tue,3,,"Memory: short/long-term, persistence",Checkpointing + memory
-36,2026-12-23,Wed,3,,"Agent evals: task success, trajectories, tool accuracy",30 test tasks; success rate
-37,2026-12-24,Thu,3,,"Human-in-the-loop: approvals, interrupts",Approval gate before recommendations
-38,2026-12-25,Fri,3,LIGHT,Christmas: light day,1 h flashcards
-39,2026-12-26,Sat,3,,"Multi-agent: supervisor, handoffs, when not to","Supervisor + 2 subagents vs single, with evals"
-40,2026-12-27,Sun,3,,"Guardrails: prompt injection, permissions, PII",10-attack injection suite + defenses
-41,2026-12-28,Mon,3,,"Failure analysis: loops, wrong tool, overflow",Fix top 3 failures
-42,2026-12-29,Tue,3,GATE 3,Consolidate,Agent >= 70% task success; README
-43,2026-12-30,Wed,4,,"Containerization, secrets, config",docker-compose: agent + API + Postgres
-44,2026-12-31,Thu,4,,Deployment: Cloud Run / Fly / ECS,Public URL with auth
-45,2027-01-01,Fri,4,,"Observability: tracing, Langfuse/LangSmith",Latency + cost dashboard
-46,2027-01-02,Sat,4,,"Cost/latency: caching, routing, batching",Model routing; start applying 5/day
-47,2027-01-03,Sun,4,,Coach upgrade: MCP + scheduled check-ins,Coach v2 exposes progress via MCP
-48,2027-01-04,Mon,4,,Angular streaming UI for AI apps (SSE),Angular chat UI with tool calls + sources
-49,2027-01-05,Tue,4,,"Classical ML: bias/variance, metrics, CV, leakage",30 flashcards + sklearn model
-50,2027-01-06,Wed,4,,"PyTorch essentials: training loop, loss, optimizers","Tiny model, explain every line"
-51,2027-01-07,Thu,4,,"Fine-tuning: SFT, LoRA/QLoRA, DPO",LoRA a small model; compare vs prompting
-52,2027-01-08,Fri,4,,"Responsible AI: bias, privacy, governance",Risks section in all READMEs
-53,2027-01-09,Sat,4,GATE 4,Portfolio polish,"3 projects pinned, diagrams, evals, demos"
-54,2027-01-10,Sun,5,,AI system design #1: enterprise RAG search,Recorded mock + rubric self-score
-55,2027-01-11,Mon,5,,Coding mocks: 2 timed mediums out loud,Recording + mistake list
-56,2027-01-12,Tue,5,,Take-home simulation (4 hours),Feature with tests + evals in time box
-57,2027-01-13,Wed,5,,"System design #2, #3: coding agent; fraud explanations",Two recorded mocks
-58,2027-01-14,Thu,5,,Behavioral: 8 STAR stories,Each under 2.5 minutes
-59,2027-01-15,Fri,5,,Project deep-dive drills,Defend every choice with a number
-60,2027-01-16,Sat,5,FINAL GATE,Final exam: full mock loop,Score 3/4+ on every round
+1,11/18/2026,Wed,1,,"Set up repo, uv, ruff, pytest, pre-commit, API keys",Run Coach Agent; log Day 1
+2,11/19/2026,Thu,1,,"Tokenization (BPE), embeddings, token cost",Script: count tokens and cost for 5 prompts
+3,11/20/2026,Fri,1,,"Transformer architecture: attention, positional encoding",1-page notes + diagram in your words
+4,11/21/2026,Sat,1,,Pretraining vs instruction tuning vs RLHF; sampling params,Temperature experiment 0 / 0.7 / 1.2
+5,11/22/2026,Sun,1,,"Messages API: system prompts, roles, streaming, stop reasons",Coach: streaming responses
+6,11/23/2026,Mon,1,,"Structured outputs: JSON schema, Pydantic, retries",Coach: progress log parsed into Pydantic
+7,11/24/2026,Tue,1,,Tool calling: tool_use / tool_result loop,Coach: hand-written agent loop with 3 tools
+8,11/25/2026,Wed,1,,"Prompt engineering patterns: examples, XML tags, chaining",Write-up #1: how tool calling works
+9,11/26/2026,Thu,1,LIGHT,Thanksgiving: light day,1 h flashcards + review notes
+10,11/27/2026,Fri,1,,Context engineering; prompt caching,"Coach: cache curriculum, measure savings"
+11,11/28/2026,Sat,1,,Hallucination causes and mitigations; grounding,Coach: quiz refuses to grade without rubric
+12,11/29/2026,Sun,1,,Model selection: frontier vs small vs open-weight,Benchmark 3 models: cost/latency/quality
+13,11/30/2026,Mon,1,,"Local inference: Ollama, vLLM, quantization",Coach: provider abstraction (Claude or local)
+14,12/1/2026,Tue,1,GATE 1,"Testing LLM code: mocks, snapshot tests","Coach v1 shipped with README, tests, demo"
+15,12/2/2026,Wed,2,,RAG end to end; RAG vs fine-tuning vs long context,Collect 50-100 public pricing/RM docs
+16,12/3/2026,Thu,2,,"Document parsing, cleaning, metadata",Ingestion pipeline
+17,12/4/2026,Fri,2,,"Chunking: fixed, recursive, semantic, parent-child",Two chunkers for comparison
+18,12/5/2026,Sat,2,,"Async Python: asyncio, semaphores, backoff, rate limits",Coach: parallel question generation
+19,12/6/2026,Sun,2,,"Embeddings, cosine similarity, HNSW/IVF",Embed into Postgres + pgvector
+20,12/7/2026,Mon,2,,"Eval design: golden datasets, leakage",Hand-write 50 Q/A/source triples
+21,12/8/2026,Tue,2,,"Retrieval metrics: recall@k, MRR, nDCG",Retrieval eval script + baseline
+22,12/9/2026,Wed,2,,"Hybrid search (BM25 + vector), RRF, rerankers",Add hybrid + reranker; record delta
+23,12/10/2026,Thu,2,,"Generation evals: faithfulness, LLM-as-judge biases",Judge prompt calibrated on 20 labels
+24,12/11/2026,Fri,2,,"Citations, grounding, 'I don't know'",Cited answers + unanswerable-question eval
+25,12/12/2026,Sat,2,,"Query rewriting, HyDE, multi-query, filters",Implement one; keep only if evals improve
+26,12/13/2026,Sun,2,,Evals in CI: regression gates,GitHub Action fails on faithfulness drop
+27,12/14/2026,Mon,2,,FastAPI for RAG; streaming endpoints,/ask endpoint with streaming + sources
+28,12/15/2026,Tue,2,GATE 2,Write the eval scorecard,Project 2 shipped: README metrics + demo
+29,12/16/2026,Wed,3,,"Agent patterns: ReAct, plan-execute, workflows vs agents",Pricing Agent design doc
+30,12/17/2026,Thu,3,,Synthetic data generation,Hotel bookings dataset in Postgres
+31,12/18/2026,Fri,3,,"Text-to-SQL: schema prompting, validation, safety",Read-only SQL tool with limits
+32,12/19/2026,Sat,3,,"Tool design: names, descriptions, recoverable errors",Forecast tool + RAG tool
+33,12/20/2026,Sun,3,,"Model Context Protocol: servers, tools, resources",SQL tool as an MCP server
+34,12/21/2026,Mon,3,,LangGraph vs Claude Agent SDK vs OpenAI Agents SDK,Port agent to LangGraph
+35,12/22/2026,Tue,3,,"Memory: short/long-term, persistence",Checkpointing + memory
+36,12/23/2026,Wed,3,,"Agent evals: task success, trajectories, tool accuracy",30 test tasks; success rate
+37,12/24/2026,Thu,3,,"Human-in-the-loop: approvals, interrupts",Approval gate before recommendations
+38,12/25/2026,Fri,3,LIGHT,Christmas: light day,1 h flashcards
+39,12/26/2026,Sat,3,,"Multi-agent: supervisor, handoffs, when not to","Supervisor + 2 subagents vs single, with evals"
+40,12/27/2026,Sun,3,,"Guardrails: prompt injection, permissions, PII",10-attack injection suite + defenses
+41,12/28/2026,Mon,3,,"Failure analysis: loops, wrong tool, overflow",Fix top 3 failures
+42,12/29/2026,Tue,3,GATE 3,Consolidate,Agent >= 70% task success; README
+43,12/30/2026,Wed,4,,"Containerization, secrets, config",docker-compose: agent + API + Postgres
+44,12/31/2026,Thu,4,,Deployment: Cloud Run / Fly / ECS,Public URL with auth
+45,1/1/2027,Fri,4,,"Observability: tracing, Langfuse/LangSmith",Latency + cost dashboard
+46,1/2/2027,Sat,4,,"Cost/latency: caching, routing, batching",Model routing; start applying 5/day
+47,1/3/2027,Sun,4,,Coach upgrade: MCP + scheduled check-ins,Coach v2 exposes progress via MCP
+48,1/4/2027,Mon,4,,Angular streaming UI for AI apps (SSE),Angular chat UI with tool calls + sources
+49,1/5/2027,Tue,4,,"Classical ML: bias/variance, metrics, CV, leakage",30 flashcards + sklearn model
+50,1/6/2027,Wed,4,,"PyTorch essentials: training loop, loss, optimizers","Tiny model, explain every line"
+51,1/7/2027,Thu,4,,"Fine-tuning: SFT, LoRA/QLoRA, DPO",LoRA a small model; compare vs prompting
+52,1/8/2027,Fri,4,,"Responsible AI: bias, privacy, governance",Risks section in all READMEs
+53,1/9/2027,Sat,4,GATE 4,Portfolio polish,"3 projects pinned, diagrams, evals, demos"
+54,1/10/2027,Sun,5,,AI system design #1: enterprise RAG search,Recorded mock + rubric self-score
+55,1/11/2027,Mon,5,,Coding mocks: 2 timed mediums out loud,Recording + mistake list
+56,1/12/2027,Tue,5,,Take-home simulation (4 hours),Feature with tests + evals in time box
+57,1/13/2027,Wed,5,,"System design #2, #3: coding agent; fraud explanations",Two recorded mocks
+58,1/14/2027,Thu,5,,Behavioral: 8 STAR stories,Each under 2.5 minutes
+59,1/15/2027,Fri,5,,Project deep-dive drills,Defend every choice with a number
+60,1/16/2027,Sat,5,FINAL GATE,Final exam: full mock loop,Score 3/4+ on every round
