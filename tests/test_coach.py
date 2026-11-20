@@ -1,5 +1,7 @@
+import csv
 import sqlite3
 from datetime import date
+from importlib.resources import files
 from types import SimpleNamespace
 
 import pytest
@@ -88,6 +90,17 @@ def test_run_tool_never_raises(store):
     tools["get_progress"].fn = boom
     out, err = run_tool(tools, "get_progress", {})
     assert err and "OperationalError" in out and "database is locked" in out
+
+
+def test_plan_csv_matches_curriculum():
+    """plan.csv is an export of CURRICULUM; fail if the two ever drift apart."""
+    text = files("ai_engineer_60.coach").joinpath("plan.csv").read_text(encoding="utf-8")
+    rows = list(csv.DictReader(text.splitlines()))
+    assert len(rows) == 60
+    for row, d in zip(rows, CURRICULUM, strict=True):
+        assert (int(row["day"]), row["date"], row["learn"], row["build"]) == (d.n, d.date.isoformat(), d.learn, d.build)
+        assert (row["tag"] == "LIGHT") == d.light
+        assert ("GATE" in row["tag"]) == d.gate
 
 
 def test_store_migrates_old_hours_column(tmp_path):

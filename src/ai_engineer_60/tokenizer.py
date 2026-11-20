@@ -62,6 +62,8 @@ class Tokenizer:
         for i in range(num_merges):
             # count up the number of times every consecutive pair appears
             stats = get_stats(ids)
+            if not stats:
+                break
             # find the pair with the highest count
             pair = max(stats, key=stats.get)
             # mint a new token: assign it the next available id
